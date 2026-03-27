@@ -1,16 +1,20 @@
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useEffect } from 'react';
 
 export default function Loading() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const mbtiFromState = (location.state as { mbti?: string } | null)?.mbti;
+  const mbtiFromStorage = sessionStorage.getItem('bread-mbti-result');
+  const mbti = mbtiFromState ?? mbtiFromStorage;
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/result');
+      navigate('/result', { state: { mbti } });
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [mbti, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FFF4E6] to-[#FFE8CC] flex flex-col items-center justify-center px-6">

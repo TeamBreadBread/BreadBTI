@@ -1,10 +1,32 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { INITIAL_SCORES, MBTI_QUESTIONS, getMbti, type MbtiTrait } from '../mbti';
 
 export default function Question() {
   const navigate = useNavigate();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [scores, setScores] = useState(INITIAL_SCORES);
 
-  const handleAnswer = () => {
-    navigate('/loading');
+  const currentQuestion = MBTI_QUESTIONS[currentIndex];
+  const progress = Math.round(((currentIndex + 1) / MBTI_QUESTIONS.length) * 100);
+
+  const handleAnswer = (trait: MbtiTrait) => {
+    const nextScores = {
+      ...scores,
+      [trait]: scores[trait] + 1,
+    };
+
+    const isLastQuestion = currentIndex === MBTI_QUESTIONS.length - 1;
+
+    if (isLastQuestion) {
+      const mbti = getMbti(nextScores);
+      sessionStorage.setItem('bread-mbti-result', mbti);
+      navigate('/loading', { state: { mbti } });
+      return;
+    }
+
+    setScores(nextScores);
+    setCurrentIndex((prev) => prev + 1);
   };
 
   return (
@@ -12,12 +34,12 @@ export default function Question() {
       {/* Progress Bar */}
       <div className="p-5">
         <div className="mb-2 text-center text-sm font-semibold text-[#D86A00]">
-          3 / 10
+          {currentIndex + 1} / {MBTI_QUESTIONS.length}
         </div>
         <div className="w-full bg-white/50 rounded-full h-2 overflow-hidden">
           <div 
             className="bg-[#FF8C42] h-full rounded-full transition-all duration-300"
-            style={{ width: '30%' }}
+            style={{ width: `${progress}%` }}
           />
         </div>
       </div>
@@ -26,16 +48,22 @@ export default function Question() {
       <main className="flex-1 flex flex-col items-center justify-center px-6">
         {/* Question */}
         <h2 className="text-3xl font-bold text-[#D86A00] text-center mb-16 leading-relaxed">
-          친구랑 빵집에 갔을 때<br />나는?
+          {currentQuestion.question}
         </h2>
 
         {/* Answer Options */}
         <div className="w-full max-w-sm space-y-4">
-          <button className="w-full bg-white hover:bg-[#FFF4E6] active:scale-98 text-[#D86A00] px-8 py-6 rounded-2xl font-semibold shadow-lg transition-all border-2 border-transparent hover:border-[#FF8C42]" onClick={handleAnswer}>
-            인기 메뉴를 고른다
+          <button
+            className="w-full bg-white hover:bg-[#FFF4E6] active:scale-98 text-[#D86A00] px-8 py-6 rounded-2xl font-semibold shadow-lg transition-all border-2 border-transparent hover:border-[#FF8C42]"
+            onClick={() => handleAnswer(currentQuestion.options[0].trait)}
+          >
+            {currentQuestion.options[0].label}
           </button>
-          <button className="w-full bg-white hover:bg-[#FFF4E6] active:scale-98 text-[#D86A00] px-8 py-6 rounded-2xl font-semibold shadow-lg transition-all border-2 border-transparent hover:border-[#FF8C42]" onClick={handleAnswer}>
-            내가 끌리는 걸 고른다
+          <button
+            className="w-full bg-white hover:bg-[#FFF4E6] active:scale-98 text-[#D86A00] px-8 py-6 rounded-2xl font-semibold shadow-lg transition-all border-2 border-transparent hover:border-[#FF8C42]"
+            onClick={() => handleAnswer(currentQuestion.options[1].trait)}
+          >
+            {currentQuestion.options[1].label}
           </button>
         </div>
       </main>
