@@ -3,6 +3,22 @@ import { useLocation, useNavigate } from 'react-router';
 import { ThumbsUp, ThumbsDown, MessageCircle, Link2, BarChart3 } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { MBTI_PROFILE_MAP, isMbtiType, type MbtiType } from '../mbti';
+import INTJImage from '../../assets/INTJ.png';
+import INTPImage from '../../assets/INTP.png';
+import ENTJImage from '../../assets/ENTJ.png';
+import ENTPImage from '../../assets/ENTP.png';
+import INFJImage from '../../assets/INFJ.png';
+import INFPImage from '../../assets/INFP.png';
+import ENFJImage from '../../assets/ENFJ.png';
+import ENFPImage from '../../assets/ENFP.png';
+import ISTJImage from '../../assets/ISTJ.png';
+import ISFJImage from '../../assets/ISFJ.png';
+import ESTJImage from '../../assets/ESTJ.png';
+import ESFJImage from '../../assets/ESFJ.png';
+import ISTPImage from '../../assets/ISTP.png';
+import ISFPImage from '../../assets/ISFP.png';
+import ESTPImage from '../../assets/ESTP.png';
+import ESFPImage from '../../assets/ESFP.png';
 
 declare global {
   interface Window {
@@ -52,6 +68,25 @@ const formatMatchLabel = (bread: string, mbti: MbtiType) => {
   return `${bread} ${emoji}(${mbti})`;
 };
 
+const MBTI_IMAGE_MAP: Record<MbtiType, string> = {
+  INTJ: INTJImage,
+  INTP: INTPImage,
+  ENTJ: ENTJImage,
+  ENTP: ENTPImage,
+  INFJ: INFJImage,
+  INFP: INFPImage,
+  ENFJ: ENFJImage,
+  ENFP: ENFPImage,
+  ISTJ: ISTJImage,
+  ISFJ: ISFJImage,
+  ESTJ: ESTJImage,
+  ESFJ: ESFJImage,
+  ISTP: ISTPImage,
+  ISFP: ISFPImage,
+  ESTP: ESTPImage,
+  ESFP: ESFPImage,
+};
+
 export default function Result() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,6 +102,7 @@ export default function Result() {
     : 'INTJ';
 
   const profile = MBTI_PROFILE_MAP[mbti];
+  const mbtiImage = MBTI_IMAGE_MAP[mbti];
   const shareText = `나는 ${mbti} ${profile.bread} 타입! 빵 MBTI 테스트 해보기`;
   const shareUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
@@ -152,14 +188,14 @@ export default function Result() {
       {/* Main Content */}
       <main className="mx-auto w-full max-w-6xl px-6 pt-10 lg:px-10 lg:pt-14">
         <div className="grid gap-8 lg:grid-cols-[1fr_1.25fr] lg:gap-10">
-          <section className="rounded-[2rem] bg-white/50 p-6 shadow-lg backdrop-blur-sm lg:p-8">
+          <section className="rounded-[2rem] bg-white/50 p-8 shadow-lg backdrop-blur-sm lg:p-6">
             {/* Bread Image */}
-            <div className="mb-8 flex justify-center">
-              <div className="w-64 h-64 rounded-3xl overflow-hidden shadow-xl lg:h-80 lg:w-80">
+            <div className="mb-0 flex items-center justify-center">
+              <div className="h-72 w-72 rounded-3xl overflow-hidden lg:h-[26rem] lg:w-[26rem]">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1751151856149-5ebf1d21586a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjcm9pc3NhbnQlMjBwYXN0cnklMjBiYWtlcnl8ZW58MXx8fHwxNzc0MjcyNjk5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                  alt="Croissant"
-                  className="w-full h-full object-cover"
+                  src={mbtiImage}
+                  alt={`${mbti} bread result image`}
+                  className="mx-auto h-full w-full object-contain"
                 />
               </div>
             </div>
