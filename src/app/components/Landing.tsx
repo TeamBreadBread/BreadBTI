@@ -137,7 +137,7 @@ export default function Landing() {
       {/* 메인 컨텐츠: 제목, 대표 이미지, CTA, 공유 버튼 */}
       <main className="flex-1 px-6 pb-16 lg:px-10 lg:pb-24">
         <div className="mx-auto flex min-h-full w-full max-w-6xl flex-col items-center justify-center gap-10 lg:grid lg:grid-cols-2 lg:gap-14">
-          <section className="order-2 flex w-full max-w-xl flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
+          <section className="order-1 flex w-full max-w-xl flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
             {/* 랜딩 메인 카피 */}
             <h1 className="text-5xl font-black text-[#D86A00] leading-tight lg:text-7xl">
               나는<br />어떤 빵일까?
@@ -151,18 +151,18 @@ export default function Landing() {
             {/* 핵심 액션 버튼 */}
             <button
               onClick={() => navigate('/question')}
-              className="mt-8 bg-[#FF8C42] hover:bg-[#FF7A10] active:scale-95 text-white px-12 py-4 rounded-full font-bold shadow-lg transition-all lg:px-16 lg:py-5 lg:text-lg"
+              className="mt-8 hidden bg-[#FF8C42] hover:bg-[#FF7A10] active:scale-95 text-white px-12 py-4 rounded-full font-bold shadow-lg transition-all lg:inline-flex lg:px-16 lg:py-5 lg:text-lg"
             >
               테스트 시작하기
             </button>
 
             {/* 신뢰도 보강용 참여자 수 */}
-            <div className="mt-4 text-sm text-[#B87333] lg:text-base">
+            <div className="mt-4 hidden text-sm text-[#B87333] lg:block lg:text-base">
               참여자수 | 105,789명
             </div>
 
             {/* 공유 섹션: 카카오/엑스/링크 아이콘 버튼 */}
-            <div className="mt-10 w-full max-w-xs lg:max-w-sm">
+            <div className="mt-10 hidden w-full max-w-xs lg:block lg:max-w-sm">
               <p className="text-sm font-semibold text-[#D86A00] text-center mb-4 lg:text-left">
                 테스트 공유하기
               </p>
@@ -193,14 +193,56 @@ export default function Landing() {
           </section>
 
           {/* 대표 빵 캐릭터 이미지: 부드럽게 떠오르는 히어로 모션 */}
-          <section className="order-1 flex w-full justify-center lg:order-2 lg:justify-end">
+          <section className="order-2 flex w-full justify-center lg:order-2 lg:justify-end">
             <div className="hero-wrap w-full max-w-md lg:max-w-xl">
               <div className="hero-shadow" />
               <img
                 src={breadCharacter}
                 alt="Bread Character"
-                className="hero-image w-full h-auto"
+                className="hero-image mb-0 block w-full h-auto"
               />
+            </div>
+          </section>
+
+          <section className="order-3 flex w-full max-w-xs flex-col items-center lg:hidden">
+            <button
+              onClick={() => navigate('/question')}
+              className="w-full bg-[#FF8C42] hover:bg-[#FF7A10] active:scale-95 text-white px-12 py-4 rounded-full font-bold shadow-lg transition-all"
+            >
+              테스트 시작하기
+            </button>
+
+            <div className="mt-4 text-sm text-[#B87333]">
+              참여자수 | 105,789명
+            </div>
+
+            <div className="mt-8 w-full">
+              <p className="text-sm font-semibold text-[#D86A00] text-center mb-4">
+                테스트 공유하기
+              </p>
+              <div className="flex gap-3 justify-center">
+                <button
+                  type="button"
+                  onClick={handleKakaoShare}
+                  className="flex items-center justify-center bg-[#FEE500] hover:bg-[#FDD000] w-12 h-12 rounded-full transition-all active:scale-95 shadow-md"
+                >
+                  <MessageCircle size={20} />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleTwitterShare}
+                  className="flex items-center justify-center bg-black hover:bg-gray-800 text-white w-12 h-12 rounded-full transition-all active:scale-95 shadow-md"
+                >
+                  <TwitterXIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="flex items-center justify-center bg-white hover:bg-gray-50 border-2 border-[#FF8C42] text-[#FF8C42] w-12 h-12 rounded-full transition-all active:scale-95 shadow-md"
+                >
+                  <Link2 size={20} />
+                </button>
+              </div>
             </div>
           </section>
         </div>
