@@ -139,7 +139,7 @@ export default function AllResults() {
       </header>
 
       {/* Main Content */}
-      <main className="px-6 lg:px-10">
+      <main className="px-6 lg:px-130">
         {/* Results List */}
         <div className="space-y-3 mb-8">
           {allResults.map((result) => (
