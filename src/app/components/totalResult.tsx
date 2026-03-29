@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { MessageCircle, Link2 } from 'lucide-react';
 
@@ -29,6 +30,98 @@ const allResults = [
 
 export default function AllResults() {
   const navigate = useNavigate();
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
+  const kakaoJsKey = import.meta.env.VITE_KAKAO_JS_KEY || import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
+
+  const shareText = '빵 MBTI 테스트 - 전체 유형 순위 보기';
+  const shareUrl = 'https://breadbti.vercel.app/totalresult';
+
+  useEffect(() => {
+    if (!kakaoJsKey) return;
+
+    const initializeKakao = () => {
+      if (!window.Kakao) return;
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init(kakaoJsKey);
+      }
+    };
+
+    if (window.Kakao) {
+      initializeKakao();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js';
+    script.async = true;
+    script.onload = initializeKakao;
+    document.body.appendChild(script);
+  }, [kakaoJsKey]);
+
+  const openShareWindow = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleKakaoShare = () => {
+    if (!window.Kakao || !window.Kakao.isInitialized()) {
+      alert('카카오 SDK 초기화가 아직 안 됐어요.');
+      return;
+    }
+
+    const payload = {
+      objectType: 'feed',
+      content: {
+        title: '빵 MBTI 전체 유형 순위',
+        description: shareText,
+        link: {
+          mobileWebUrl: shareUrl,
+          webUrl: shareUrl,
+        },
+      },
+      buttons: [
+        {
+          title: '순위 보러가기',
+          link: {
+            mobileWebUrl: shareUrl,
+            webUrl: shareUrl,
+          },
+        },
+      ],
+    };
+
+    if (window.Kakao.Share?.sendDefault) {
+      window.Kakao.Share.sendDefault(payload);
+      return;
+    }
+
+    if (window.Kakao.Link?.sendDefault) {
+      window.Kakao.Link.sendDefault(payload);
+      return;
+    }
+
+    const fallbackUrl = `https://sharer.kakao.com/talk/friends/picker/link?url=${encodeURIComponent(shareUrl)}`;
+    openShareWindow(fallbackUrl);
+  };
+
+  const handleTwitterShare = () => {
+    const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    openShareWindow(twitterShareUrl);
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+    } catch {
+      const tempInput = document.createElement('textarea');
+      tempInput.value = shareUrl;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+    }
+
+    setIsCopyModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FFF4E6] to-[#FFE8CC] pb-10">
@@ -97,13 +190,25 @@ export default function AllResults() {
             결과 공유하기
           </p>
           <div className="flex gap-3 justify-center">
-            <button className="flex items-center justify-center bg-[#FEE500] hover:bg-[#FDD000] w-12 h-12 rounded-full transition-all active:scale-95 shadow-md">
+            <button
+              type="button"
+              onClick={handleKakaoShare}
+              className="flex items-center justify-center bg-[#FEE500] hover:bg-[#FDD000] w-12 h-12 rounded-full transition-all active:scale-95 shadow-md"
+            >
               <MessageCircle size={20} />
             </button>
-            <button className="flex items-center justify-center bg-black hover:bg-gray-800 text-white w-12 h-12 rounded-full transition-all active:scale-95 shadow-md">
+            <button
+              type="button"
+              onClick={handleTwitterShare}
+              className="flex items-center justify-center bg-black hover:bg-gray-800 text-white w-12 h-12 rounded-full transition-all active:scale-95 shadow-md"
+            >
               <TwitterXIcon />
             </button>
-            <button className="flex items-center justify-center bg-white hover:bg-gray-50 border-2 border-[#FF8C42] text-[#FF8C42] w-12 h-12 rounded-full transition-all active:scale-95 shadow-md">
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className="flex items-center justify-center bg-white hover:bg-gray-50 border-2 border-[#FF8C42] text-[#FF8C42] w-12 h-12 rounded-full transition-all active:scale-95 shadow-md"
+            >
               <Link2 size={20} />
             </button>
           </div>
@@ -116,6 +221,23 @@ export default function AllResults() {
         >
           다시 테스트하기
         </button>
+
+        {isCopyModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6">
+            <div className="w-full max-w-xs rounded-2xl bg-white p-5 text-center shadow-xl">
+              <p className="text-base font-semibold text-[#D86A00]">
+                링크가 복사되었습니다.
+              </p>
+              <button
+                type="button"
+                onClick={() => setIsCopyModalOpen(false)}
+                className="mt-4 w-full rounded-xl bg-[#FF8C42] py-2.5 font-bold text-white hover:bg-[#FF7A10]"
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
