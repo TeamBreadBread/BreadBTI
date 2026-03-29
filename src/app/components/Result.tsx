@@ -309,7 +309,10 @@ export default function Result() {
 
             {/* Action Buttons */}
             <div className="space-y-3 mb-6">
-              <button className="w-full bg-[#FF8C42] hover:bg-[#FF7A1F] text-white px-8 py-4 rounded-full font-bold shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 lg:text-lg">
+              <button
+                onClick={() => navigate('/totalresult')}
+                className="w-full bg-[#FF8C42] hover:bg-[#FF7A1F] text-white px-8 py-4 rounded-full font-bold shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 lg:text-lg"
+              >
                 <BarChart3 size={20} />
                 전체 유형 보러가기
               </button>

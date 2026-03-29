@@ -3,6 +3,7 @@ import Landing from "./components/Landing";
 import Question from "./components/Question";
 import Loading from "./components/Loading";
 import Result from "./components/Result";
+import TotalResult from "./components/totalResult";
 
 export const router = createBrowserRouter([
   {
@@ -20,5 +21,9 @@ export const router = createBrowserRouter([
   {
     path: "/result",
     Component: Result,
+  },
+  {
+    path: "/totalresult",
+    Component: TotalResult,
   },
 ]);
