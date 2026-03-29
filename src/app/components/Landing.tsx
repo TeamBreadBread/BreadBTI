@@ -46,6 +46,7 @@ export default function Landing() {
 
   const shareText = '나는 어떤 빵일까? MBTI 테스트 해보기';
   const shareUrl = 'https://breadbti.vercel.app';
+  const shareImageUrl = breadCharacter.startsWith('http') ? breadCharacter : `${shareUrl}${breadCharacter}`;
 
   useEffect(() => {
     if (!kakaoJsKey) {
@@ -90,13 +91,25 @@ export default function Landing() {
     }
 
     const payload = {
-      objectType: 'text',
-      text: shareText,
-      link: {
-        mobileWebUrl: shareUrl,
-        webUrl: shareUrl,
+      objectType: 'feed',
+      content: {
+        title: '빵 MBTI 테스트',
+        description: shareText,
+        imageUrl: shareImageUrl,
+        link: {
+          mobileWebUrl: shareUrl,
+          webUrl: shareUrl,
+        },
       },
-      buttonTitle: '테스트 하러가기',
+      buttons: [
+        {
+          title: '테스트 하러가기',
+          link: {
+            mobileWebUrl: shareUrl,
+            webUrl: shareUrl,
+          },
+        },
+      ],
     };
 
     if (window.Kakao.Share?.sendDefault) {
