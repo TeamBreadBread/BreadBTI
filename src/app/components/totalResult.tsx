@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { MessageCircle, Link2 } from 'lucide-react';
+import breadCharacter from '../../assets/BreadBTI_home.png';
 
 // Twitter X Logo Component
 const TwitterXIcon = () => (
@@ -35,6 +36,7 @@ export default function AllResults() {
 
   const shareText = '빵 MBTI 테스트 - 전체 유형 순위 보기';
   const shareUrl = 'https://breadbti.vercel.app/totalresult';
+  const shareImageUrl = breadCharacter.startsWith('http') ? breadCharacter : `https://breadbti.vercel.app${breadCharacter}`;
 
   useEffect(() => {
     if (!kakaoJsKey) return;
@@ -72,6 +74,7 @@ export default function AllResults() {
       objectType: 'feed',
       content: {
         title: '빵 MBTI 전체 유형 순위',
+        imageUrl: shareImageUrl,
         description: shareText,
         link: {
           mobileWebUrl: shareUrl,
