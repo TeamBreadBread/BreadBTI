@@ -105,6 +105,7 @@ export default function Result() {
   const mbtiImage = MBTI_IMAGE_MAP[mbti];
   const shareText = `나는 ${mbti} ${profile.bread} 타입! 빵 MBTI 테스트 해보기`;
   const shareUrl = 'https://breadbti.vercel.app';
+  const shareImageUrl = mbtiImage.startsWith('http') ? mbtiImage : `${shareUrl}${mbtiImage}`;
 
   useEffect(() => {
     if (!kakaoJsKey) {
@@ -149,13 +150,25 @@ export default function Result() {
     }
 
     const payload = {
-      objectType: 'text',
-      text: shareText,
-      link: {
-        mobileWebUrl: shareUrl,
-        webUrl: shareUrl,
+      objectType: 'feed',
+      content: {
+        title: `${mbti} ${profile.bread} 타입 결과`,
+        description: shareText,
+        imageUrl: shareImageUrl,
+        link: {
+          mobileWebUrl: shareUrl,
+          webUrl: shareUrl,
+        },
       },
-      buttonTitle: '테스트 하러가기',
+      buttons: [
+        {
+          title: '테스트 하러가기',
+          link: {
+            mobileWebUrl: shareUrl,
+            webUrl: shareUrl,
+          },
+        },
+      ],
     };
 
     if (window.Kakao.Share?.sendDefault) {
