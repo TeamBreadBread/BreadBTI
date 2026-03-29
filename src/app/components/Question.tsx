@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { INITIAL_SCORES, MBTI_QUESTIONS, getMbti, type MbtiTrait } from '../mbti';
 
@@ -10,7 +10,9 @@ export default function Question() {
   const currentQuestion = MBTI_QUESTIONS[currentIndex];
   const progress = Math.round(((currentIndex + 1) / MBTI_QUESTIONS.length) * 100);
 
-  const handleAnswer = (trait: MbtiTrait) => {
+  const handleAnswer = (trait: MbtiTrait, event?: MouseEvent<HTMLButtonElement>) => {
+    event?.currentTarget.blur();
+
     const nextScores = {
       ...scores,
       [trait]: scores[trait] + 1,
@@ -47,7 +49,7 @@ export default function Question() {
       {/* Main Content */}
       <main className="flex flex-1 items-center px-6 pb-12 lg:px-10 lg:pb-20">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-center">
-          <div className="w-full rounded-[2rem] bg-white/40 p-6 shadow-lg backdrop-blur-sm lg:p-12">
+          <div key={currentIndex} className="w-full rounded-[2rem] bg-white/40 p-6 shadow-lg backdrop-blur-sm lg:p-12">
             {/* Question */}
             <h2 className="text-3xl font-bold text-[#D86A00] text-center mb-10 leading-relaxed lg:mb-14 lg:text-5xl">
               {currentQuestion.question}
@@ -57,13 +59,13 @@ export default function Question() {
             <div className="mx-auto grid w-full max-w-4xl gap-4 lg:grid-cols-2 lg:gap-6">
               <button
                 className="w-full bg-white hover:bg-[#FFF4E6] active:scale-98 text-[#D86A00] px-8 py-6 rounded-2xl font-semibold shadow-lg transition-all border-2 border-transparent hover:border-[#FF8C42] lg:min-h-[160px] lg:text-xl"
-                onClick={() => handleAnswer(currentQuestion.options[0].trait)}
+                onClick={(event) => handleAnswer(currentQuestion.options[0].trait, event)}
               >
                 {currentQuestion.options[0].label}
               </button>
               <button
                 className="w-full bg-white hover:bg-[#FFF4E6] active:scale-98 text-[#D86A00] px-8 py-6 rounded-2xl font-semibold shadow-lg transition-all border-2 border-transparent hover:border-[#FF8C42] lg:min-h-[160px] lg:text-xl"
-                onClick={() => handleAnswer(currentQuestion.options[1].trait)}
+                onClick={(event) => handleAnswer(currentQuestion.options[1].trait, event)}
               >
                 {currentQuestion.options[1].label}
               </button>
