@@ -42,7 +42,7 @@ export default function Landing() {
   // 시작 버튼 클릭 시 질문 페이지로 이동
   const navigate = useNavigate();
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
-  const kakaoJsKey = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
+  const kakaoJsKey = import.meta.env.VITE_KAKAO_JS_KEY;
 
   const shareText = '나는 어떤 빵일까? MBTI 테스트 해보기';
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
