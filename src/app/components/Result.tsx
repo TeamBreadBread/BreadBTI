@@ -91,7 +91,7 @@ export default function Result() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
-  const kakaoJsKey = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
+  const kakaoJsKey = import.meta.env.VITE_KAKAO_JS_KEY || import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
 
   const mbtiFromState = (location.state as { mbti?: string } | null)?.mbti;
   const mbtiFromStorage = sessionStorage.getItem('bread-mbti-result');
@@ -104,16 +104,23 @@ export default function Result() {
   const profile = MBTI_PROFILE_MAP[mbti];
   const mbtiImage = MBTI_IMAGE_MAP[mbti];
   const shareText = `나는 ${mbti} ${profile.bread} 타입! 빵 MBTI 테스트 해보기`;
-  const shareUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const shareUrl = 'https://breadbti.vercel.app';
 
   useEffect(() => {
-    if (!kakaoJsKey) return;
+    if (!kakaoJsKey) {
+      console.error('카카오 JS 키 없음');
+      return;
+    }
 
     const initializeKakao = () => {
       if (!window.Kakao) return;
       if (!window.Kakao.isInitialized()) {
         window.Kakao.init(kakaoJsKey);
       }
+
+      console.log('Kakao initialized:', window.Kakao.isInitialized());
+      console.log('Origin:', window.location.origin);
+      console.log('Key:', kakaoJsKey);
     };
 
     if (window.Kakao) {
@@ -125,6 +132,9 @@ export default function Result() {
     script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js';
     script.async = true;
     script.onload = initializeKakao;
+    script.onerror = () => {
+      console.error('카카오 SDK 스크립트 로드 실패');
+    };
     document.body.appendChild(script);
   }, [kakaoJsKey]);
 
@@ -133,9 +143,8 @@ export default function Result() {
   };
 
   const handleKakaoShare = () => {
-    if (!window.Kakao) {
-      const fallbackUrl = `https://sharer.kakao.com/talk/friends/picker/link?url=${encodeURIComponent(shareUrl)}`;
-      openShareWindow(fallbackUrl);
+    if (!window.Kakao || !window.Kakao.isInitialized()) {
+      alert('카카오 SDK 초기화가 아직 안 됐어요.');
       return;
     }
 

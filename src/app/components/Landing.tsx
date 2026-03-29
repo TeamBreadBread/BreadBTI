@@ -42,19 +42,26 @@ export default function Landing() {
   // 시작 버튼 클릭 시 질문 페이지로 이동
   const navigate = useNavigate();
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
-  const kakaoJsKey = import.meta.env.VITE_KAKAO_JS_KEY;
+  const kakaoJsKey = import.meta.env.VITE_KAKAO_JS_KEY || import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
 
   const shareText = '나는 어떤 빵일까? MBTI 테스트 해보기';
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const shareUrl = 'https://breadbti.vercel.app';
 
   useEffect(() => {
-    if (!kakaoJsKey) return;
+    if (!kakaoJsKey) {
+      console.error('카카오 JS 키 없음');
+      return;
+    }
 
     const initializeKakao = () => {
       if (!window.Kakao) return;
       if (!window.Kakao.isInitialized()) {
         window.Kakao.init(kakaoJsKey);
       }
+
+      console.log('Kakao initialized:', window.Kakao.isInitialized());
+      console.log('Origin:', window.location.origin);
+      console.log('Key:', kakaoJsKey);
     };
 
     if (window.Kakao) {
@@ -66,6 +73,9 @@ export default function Landing() {
     script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js';
     script.async = true;
     script.onload = initializeKakao;
+    script.onerror = () => {
+      console.error('카카오 SDK 스크립트 로드 실패');
+    };
     document.body.appendChild(script);
   }, [kakaoJsKey]);
 
@@ -74,9 +84,8 @@ export default function Landing() {
   };
 
   const handleKakaoShare = () => {
-    if (!window.Kakao) {
-      const fallbackUrl = `https://sharer.kakao.com/talk/friends/picker/link?url=${encodeURIComponent(shareUrl)}`;
-      openShareWindow(fallbackUrl);
+    if (!window.Kakao || !window.Kakao.isInitialized()) {
+      alert('카카오 SDK 초기화가 아직 안 됐어요.');
       return;
     }
 
